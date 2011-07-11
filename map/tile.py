@@ -13,7 +13,7 @@ class Tile(GameObject):
         self._body = body
         if body is not None:
             self._body.user_data = self 
-            print self._body.body
+            #print self._body.body
         
     @property
     def sprite(self): return self._sprite

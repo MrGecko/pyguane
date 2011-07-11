@@ -47,6 +47,7 @@ class myDebugDraw(b2DebugDraw):
 class MyContactListener(b2ContactListener):
     def __init__(self): 
         super(MyContactListener, self).__init__() 
+        pass
        
     def Add(self, point):
         """Handle add point"""
@@ -65,6 +66,12 @@ class MyContactListener(b2ContactListener):
         print "point:", point
         pass
     
+class MyContactFilter(b2ContactFilter):
+    def __init__(self):
+        super(MyContactFilter, self).__init__()
+    def ShouldCollide(self, shape1, shape2):
+        return True
+
     
 @Singleton
 class PhysicWorld:
@@ -78,9 +85,10 @@ class PhysicWorld:
         self._world = b2World(worldAABB, gravity, sleep) 
         self.debug = False
         
-        self._cl = MyContactListener()
-        self._world.SetContactListener(self._cl)
-        
+        _cl = MyContactListener()
+        self._world.SetContactListener(_cl)
+        #_cf = MyContactFilter()
+        #self._world.SetContactFilter(_cf)
         #self.myDraw = myDebugDraw()
         #self.myDraw.SetFlags(self.myDraw.e_shapeBit) # and whatever else you want it to draw 
         #self.myDraw.surface  = Window().surface
@@ -97,9 +105,9 @@ class PhysicWorld:
         body_def = b2BodyDef()
         body_def.active = active
         body_def.allowSleep = True
-        #body_def.resitution = 0.2
+        body_def.resitution = 2.5
         #body_def.friction = 0.5
-        #body_def.density = 1.0
+        body_def.density = 20.0
         #body_def.IsSleeping = True
         #body_def.massData.mass = 2.0
         body_def.position = pos

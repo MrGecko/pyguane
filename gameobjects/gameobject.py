@@ -1,7 +1,7 @@
 
-from math import modf
+#from math import modf
 
-from pygame.rect import Rect
+#from pygame.rect import Rect
 from pyguane.physics.world import PhysicWorld
 
 class GameObject(object):
@@ -23,8 +23,8 @@ class GameObject(object):
             self.sprite.kill()
             if self.body is not None:
                 PhysicWorld().world.DestroyBody(self.body.body)
-        except Exception as e :
-            print "Error while deleting a game object: %s" % str(e)
+        except Exception:# as e :
+            pass#print "Error while deleting a game object: %s" % str(e)
          
     def registerUpdateFunc(self, func):
         def update(tick):

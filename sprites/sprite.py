@@ -4,7 +4,7 @@ from pygame.sprite import DirtySprite
 
 from pyguane.rect.extrect import ExtRect
 
-from pygame.transform import scale, smoothscale, rotate
+from pygame.transform import rotate#,scale, smoothscale, 
 
 
     
@@ -59,7 +59,7 @@ class ExtSprite(DirtySprite, object):
     #    self._original_rect = ExtRect(self.rect)
     
     def moveIP(self, dx, dy):
-        if dx!=0 or dy!=0:
+        if dx != 0 or dy != 0:
             #self.rect.move_ip(dx, dy)
             self._position.move_ip(dx, dy)
             self.rect = self._position.copy()
@@ -168,7 +168,7 @@ class ExtSprite(DirtySprite, object):
     def center(self): return self._position.center
     @center.setter
     def center(self, c): 
-        self.moveIP(c[0]-self.center[0], c[1]-self.center[1])
+        self.moveIP(c[0] - self.center[0], c[1] - self.center[1])
 
 
     @property
@@ -264,4 +264,3 @@ class ExtSprite(DirtySprite, object):
         self.kill()
         
         
-         

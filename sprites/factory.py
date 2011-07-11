@@ -1,21 +1,21 @@
 
-from pygame.color import Color
+#from pygame.color import Color
 from pygame.image import load as loadImage
 from pygame.rect import Rect
-from pygame.display import flip as displayFlip
+#from pygame.display import flip as displayFlip
 
 
 from pyguane.core.singleton import Singleton
 from pyguane.sprites.sprite import ExtSprite
 from pyguane.sprites.layereddirty2 import LayeredDirty2
-from pyguane.gameobjects.gameobject import GameObject
+#from pyguane.gameobjects.gameobject import GameObject
 from pyguane.core.librarian import Librarian
-from pyguane.core.window import Window
+#from pyguane.core.window import Window
 
 from math import ceil
 
-import sys
-from pprint import pprint as printPretty
+#import sys
+#from pprint import pprint as printPretty
 
 
 class Leaf(object):
@@ -67,7 +67,7 @@ class SpritesQuadTree(object):
             return None
         else:
             bouding_rect = _sprites[0].position.unionall([spr.position for spr in _sprites])
-            window_rect = Window().rect
+            #window_rect = Window().rect
             return bouding_rect#.inflate(window_rect.width, window_rect.height)
     
         

@@ -1,9 +1,9 @@
 import json
 
-from pprint import pprint
+#from pprint import pprint
 from pyguane.resources.resourcefactory import ResourceFactory
-from pyguane.sprites.factory import SpriteFactory
-from pyguane.core.window import Window
+#from pyguane.sprites.factory import SpriteFactory
+#from pyguane.core.window import Window
 
 import cPickle
 

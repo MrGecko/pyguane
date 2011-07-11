@@ -1,5 +1,5 @@
 from pygame.rect import Rect
-from pygame.transform import rotate, scale, smoothscale
+#from pygame.transform import rotate, scale, smoothscale
 
 from math import modf
 
@@ -31,9 +31,8 @@ class ExtRect(Rect):
         
         
 if __name__ == "__main__":        
-       erect = ExtRect(0, 0, 20, 40)
-       erect.move_ip(17.2, 0)
-       erect.move_ip(17.6, 0)
-       
-       print erect
+    erect = ExtRect(0, 0, 20, 40)
+    erect.move_ip(17.2, 0)
+    erect.move_ip(17.6, 0)   
+    print erect
        

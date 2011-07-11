@@ -1,25 +1,15 @@
-import json
-from pprint import pprint
 
-from pygame.rect import Rect
 
-from pyguane.core.singleton import Singleton
 from pyguane.core.librarian import Librarian
-from pyguane.core.window import Window
+from pyguane.core.singleton import Singleton
 from pyguane.map.tile import Tile
+from pyguane.physics.body import PhysicBody
+from pyguane.physics.constants import BOX2D_UNITS_SYSTEM
+from pyguane.physics.world import PhysicWorld
+from pyguane.rect.extrect import ExtRect
 from pyguane.sprites.factory import SpriteFactory
 
-from pyguane.physics.body import PhysicBody
-from pyguane.physics.world import PhysicWorld
-
-from pyguane.rect.extrect import ExtRect
-
-
-from pyguane.widgets.label import Label
-
-from pygame.display import flip as displayFlip
-
-from math import floor
+import json
 
 
 
@@ -142,7 +132,6 @@ class ResourceFactory(object):
         
     
     def _makeBodyFromData(self, data, position):
-        
         #make the physic body        
         try:
             p_world = PhysicWorld()
@@ -150,7 +139,6 @@ class ResourceFactory(object):
             print e, ": you need to have a physic world before you create your bodies."
             raise e
         
-        body = None   
         active = True #active = False means the body will not participate in collisions, ray casts, etc.
         shape_list = []
         mass = 0.0  # static by default
@@ -158,13 +146,15 @@ class ResourceFactory(object):
         if "body" not in data: 
             #no body specified: going to use the bouding rect   
             rect = ExtRect(data["area"])
-            shape_list.append(Rect((0, 0), rect.size))
+            shape_list.append([(0.0, 0.0), (0.0, rect.height * BOX2D_UNITS_SYSTEM),
+                               (rect.width * BOX2D_UNITS_SYSTEM, rect.height * BOX2D_UNITS_SYSTEM), (rect.width * BOX2D_UNITS_SYSTEM, 0.0)])#(Rect((0, 0), rect.size))
         else:      
             
             body_data = data["body"]
             
             if body_data is None:
                 return None
+            
             
             if "active" in body_data:
                 active = body_data["active"]
@@ -175,7 +165,8 @@ class ResourceFactory(object):
             if "filename" not in body_data:
                 #there is no filename in the body conf
                 rect = ExtRect(data["area"])
-                shape_list.append(Rect((0, 0), rect.size))
+                shape_list.append([(0.0, 0.0), (0.0, rect.height * BOX2D_UNITS_SYSTEM),
+                                   (rect.width * BOX2D_UNITS_SYSTEM, rect.height * BOX2D_UNITS_SYSTEM), (rect.width * BOX2D_UNITS_SYSTEM, 0.0)])#(Rect((0, 0), rect.size))
             else:
                 #try to load the meshes from the file
                 try:
@@ -186,16 +177,20 @@ class ResourceFactory(object):
                                 shape_list.append([])
                             #append a vertex to the shape
                             if line.startswith('v'):
-                                junk, x, z, y = line.split(" ")
-                                x, y = float(x), float(y)
-                                shape_list[-1].insert(0, (x, y))
+                                temp_list = line.split(" ") # [junk, x, z, y]
+                                x, y = float(temp_list[1]), float(temp_list[3])
+                                shape_list[-1].append((x * BOX2D_UNITS_SYSTEM, y * BOX2D_UNITS_SYSTEM))
                 except IOError, e:
                     raise IOError("Error while loading the body data: %s" % (body_data["filename"]))
-          
+
         #make the body    
         collision_filter = data["kind"]
-        body = PhysicBody(p_world, position, shape_list, collision_filter, mass, active)
         
+        x, y = position
+        position = (x * BOX2D_UNITS_SYSTEM, y * BOX2D_UNITS_SYSTEM)
+        
+        body = PhysicBody(p_world, position, shape_list, collision_filter, mass, active)
+        #print shape_list
         return body
         
     def makeBodyFromSymbol(self, symbol, x, y):
@@ -220,6 +215,7 @@ class ResourceFactory(object):
         
         
     def makeSpriteFromSymbol(self, symbol, x, y, layer=0):
+        #x, y = (x / BOX2D_UNITS_SYSTEM, y / BOX2D_UNITS_SYSTEM)
         t_data = self._getDataFromSymbol(symbol)    
         new_sprite = self._makeSpriteFromData(t_data, x, y, layer)
         self._bindAnimationsFromData(t_data, new_sprite)

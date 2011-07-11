@@ -1,7 +1,7 @@
 
-from pygame.surface import Surface
+#from pygame.surface import Surface
 from pygame.color import Color
-from pygame.rect import Rect
+#from pygame.rect import Rect
 from pygame.font import Font
 
 from pyguane.sprites.factory import SpriteFactory
@@ -34,12 +34,12 @@ class Label(GameObject):
         self._sprite.pinned = value
     
     def _render(self, x, y, text, color=None):
-         self._text = text
-         if color is not None:
-             self._color = color
-         self._sprite.image =  self._font.render(self._text, True, self._color)
-         self._sprite.dirty = 1
-         self.topleft = (x, y)
+        self._text = text
+        if color is not None:
+            self._color = color
+        self._sprite.image = self._font.render(self._text, True, self._color)
+        self._sprite.dirty = 1
+        self.topleft = (x, y)
     
     @property
     def text(self): return self._text

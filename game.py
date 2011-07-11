@@ -24,7 +24,7 @@ class Game(object):
         self._egg = Egg(width, height,)
         self.clock = self._egg.clock
         
-        self.physic_world = PhysicWorld(Rect(-width, -height, width * 2, height * 2))
+        self.physic_world = PhysicWorld(Rect(-width, -height, width * 3, height * 3))
         self.state_manager = StateManager()
         
         self.sprite_factory = SpriteFactory()
