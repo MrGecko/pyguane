@@ -10,7 +10,7 @@ from pyguane.core.window import Window
 from pyguane.core.eventmanager import EventManager
 
 from pygame.display import update as displayUpdate
-from pygame.display import flip as displayFlip
+#from pygame.display import flip as displayFlip
 
 from pygame.time import wait, Clock
 
@@ -22,7 +22,7 @@ from pyguane.core.singleton import Singleton
 @Singleton
 class Egg(object):
     
-    def __init__(self, width, height, fullscreen = False, opengl_mode = False):
+    def __init__(self, width, height, fullscreen=False, opengl_mode=False):
         self._window = Window(width, height, fullscreen, opengl_mode)
         self._event_manager = EventManager()
         self._updateWorld = lambda : 0
@@ -109,7 +109,7 @@ if __name__ == '__main__':
     iguane = Egg(720, 512)  
     
     pos_x = 100
-    new_rect =  Rect(pos_x, 100, 190, 310)
+    new_rect = Rect(pos_x, 100, 190, 310)
     old_rect = new_rect
     
     @iguane.observeKeyboard
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     def update():
         global old_rect, new_rect
         old_rect = Rect(new_rect)
-        new_rect =  Rect(pos_x, 100, 190, 310)
+        new_rect = Rect(pos_x, 100, 190, 310)
         #print "i'm updating my data"
                           
     @iguane.Renderer(iguane.window.surface)       

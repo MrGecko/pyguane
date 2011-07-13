@@ -9,6 +9,8 @@ from pyguane.physics.world import PhysicWorld
 from pyguane.rect.extrect import ExtRect
 from pyguane.sprites.factory import SpriteFactory
 
+from Box2D import *
+
 import json
 
 
@@ -141,7 +143,8 @@ class ResourceFactory(object):
         
         active = True #active = False means the body will not participate in collisions, ray casts, etc.
         shape_list = []
-        mass = 0.0  # static by default
+        mass = 0.0  
+        body_type = b2_staticBody
         
         if "body" not in data: 
             #no body specified: going to use the bouding rect   
@@ -154,7 +157,11 @@ class ResourceFactory(object):
             
             if body_data is None:
                 return None
-            
+
+            if "type" in body_data:
+                if body_data["type"] == "dynamic":
+                    body_type = b2_dynamicBody 
+                    
             
             if "active" in body_data:
                 active = body_data["active"]
@@ -166,7 +173,8 @@ class ResourceFactory(object):
                 #there is no filename in the body conf
                 rect = ExtRect(data["area"])
                 shape_list.append([(0.0, 0.0), (0.0, rect.height * BOX2D_UNITS_SYSTEM),
-                                   (rect.width * BOX2D_UNITS_SYSTEM, rect.height * BOX2D_UNITS_SYSTEM), (rect.width * BOX2D_UNITS_SYSTEM, 0.0)])#(Rect((0, 0), rect.size))
+                                   (rect.width * BOX2D_UNITS_SYSTEM, rect.height * BOX2D_UNITS_SYSTEM),
+                                   (rect.width * BOX2D_UNITS_SYSTEM, 0.0)])#(Rect((0, 0), rect.size))
             else:
                 #try to load the meshes from the file
                 try:
@@ -184,12 +192,13 @@ class ResourceFactory(object):
                     raise IOError("Error while loading the body data: %s" % (body_data["filename"]))
 
         #make the body    
-        collision_filter = data["kind"]
-        
         x, y = position
         position = (x * BOX2D_UNITS_SYSTEM, y * BOX2D_UNITS_SYSTEM)
         
-        body = PhysicBody(p_world, position, shape_list, collision_filter, mass, active)
+        for s in shape_list:
+            s.reverse()
+        
+        body = PhysicBody(p_world, position, shape_list, body_type, mass, active)
         #print shape_list
         return body
         

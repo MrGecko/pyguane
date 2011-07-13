@@ -37,8 +37,8 @@ class Game(object):
             if self.physic_world.debug:
                 for b in self.physic_world.world:
                     x, y = b.position
-                    for shape in b:
-                        vertices = [(vx + x, vy + y) for vx, vy in shape.vertices]
+                    for fixture in b:
+                        vertices = [(vx + x, vy + y) for vx, vy in fixture.shape.vertices]
                         polygon(surface, vertices, self.physic_world.DEBUG_COLOR)
                 displayFlip()
                 

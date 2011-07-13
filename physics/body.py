@@ -3,28 +3,27 @@
 from pygame.rect import Rect
 #from Box2D import *
 
-from Box2D import b2Vec2
+from Box2D import b2PolygonShape, b2Vec2
 
 
 class PhysicBody(object):
     
-    def __init__(self, world, position, shape_list, collision_filter, mass=0.0, active=True,):
-        b_def = world.createBodyDef(position, active)
-        b_def.massData.mass = mass
-        self._body = world.createBodyFromDef(b_def)
+    def __init__(self, world, position, shape_list, body_type, mass=0.0, active=True,):
+        #b_def = world.createBodyDef(position, active)
+        #b_def.massData.mass = mass
+        self._body = world.createBody(position=position, type=body_type)
         self.addShape(world, shape_list)
                 
     def addShape(self, world, shape):
         #shortcuts
-        createShape = self._body.CreateShape
-        shapeDefFromVertices = world.shapeDefFromVertices
-        shapeDefFromRect = world.shapeDefFromRect
+        createShape = self._body.CreateFixturesFromShapes
         #add shapes
         for s in shape:
+            #print s
             if isinstance(s, Rect):
-                createShape(shapeDefFromRect(s))
+                createShape(b2PolygonShape(vertices=[s.topleft, s.bottomleft, s.bottomright, s.topright]))
             else:
-                createShape(shapeDefFromVertices(s))
+                createShape(b2PolygonShape(vertices=s))
             
     @property
     def body(self): return self._body        
@@ -33,7 +32,7 @@ class PhysicBody(object):
     def shapes(self): return self._body.shapeList
     
     @property
-    def mass(self): return self._body.GetMass()
+    def mass(self): return self._body.mass
     
     @property
     def position(self): return self._body.position
@@ -42,7 +41,7 @@ class PhysicBody(object):
     def user_data(self): return self._body.userData
     
     @property
-    def is_sleeping(self): return self._body.isSleeping
+    def is_sleeping(self): return self._body.awake
     
     
     @user_data.setter
@@ -50,7 +49,7 @@ class PhysicBody(object):
         self._body.userData = d
     
     def setLinearVelocity(self, vec):
-        self._body.SetLinearVelocity(b2Vec2(vec))
+        self._body.linearVelocity = b2Vec2(vec)
     
     def applyImpulse(self, vec, point=None):
         if point is None:
@@ -58,5 +57,5 @@ class PhysicBody(object):
         self._body.ApplyImpulse(b2Vec2(vec), point)
     
     def wakeUp(self):
-        self._body.WakeUp()
+        self._body.awake = True
 

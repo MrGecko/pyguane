@@ -11,39 +11,6 @@ from pygame.draw import *
 from pyguane.physics.body import PhysicBody
 
 
-
-class myDebugDraw(b2DebugDraw):
-    def __init__(self): super(myDebugDraw, self).__init__()
-    
-    def convertColor(self, color):
-        """
-        Take a floating point color in range (0..1,0..1,0..1) and convert it to (255,255,255)
-        """
-        if isinstance(color, b2Color):
-            return (int(255 * color.r), int(255 * color.g), int(255 * color.b))
-        return (int(255 * color[0]), int(255 * color[1]), int(255 * color[2]))
-        
-    def DrawCircle(self, center, radius, color):
-        pass
-    def DrawSegment(self, p1, p2, color):
-        pass
-    def DrawXForm(self, xf):
-        pass
-    def DrawSolidCircle(self, center, radius, axis, color):
-        pass
-    def DrawPolygon(self, vertices, vertexCount, color):
-        color = self.convertColor(color)
-        polygon(self.surface, color, vertices, 1)
-        #print "DrawPolygon [Vertices: %s Count: %d Color: (%f, %f, %f)]" % (vertices, vertexCount, color.r, color.g, color.b)
-        pass
-    def DrawSolidPolygon(self, vertices, vertexCount, color):
-        color = self.convertColor(color)
-        polygon(self.surface, color, vertices, 1)
-        #print "DrawSolidPolygon [Vertices: %s Count: %d Color: (%f, %f, %f)]" % (vertices, vertexCount, color.r, color.g, color.b)
-        pass
-        #displayFlip()
-
-
 class MyContactListener(b2ContactListener):
     def __init__(self): 
         super(MyContactListener, self).__init__() 
@@ -82,11 +49,11 @@ class PhysicWorld:
         worldAABB = b2AABB()
         worldAABB.lowerBound = (bb.left, bb.top)
         worldAABB.upperBound = (bb.width, bb.height)    
-        self._world = b2World(worldAABB, gravity, sleep) 
+        self._world = b2World(gravity, sleep, contactListener=MyContactListener())#(worldAABB, gravity, sleep) 
         self.debug = False
         
-        _cl = MyContactListener()
-        self._world.SetContactListener(_cl)
+        #_cl = MyContactListener()
+        #self._world.SetContactListener(_cl)
         #_cf = MyContactFilter()
         #self._world.SetContactFilter(_cf)
         #self.myDraw = myDebugDraw()
@@ -114,18 +81,9 @@ class PhysicWorld:
         return body_def
         
 
-    def createBodyFromDef(self, body_def):
-        return self._world.CreateBody(body_def)
+    def createBody(self, position, type):
+        return self._world.CreateBody(type=type, position=position)
 
-
-    def shapeDefFromVertices(self, vertices):
-        shape_def = b2PolygonDef()
-        shape_def.setVertices(vertices)
-        return shape_def
-        
-    def shapeDefFromRect(self, r):
-        return self.shapeDefFromVertices([r.topleft, r.bottomleft, r.bottomright, r.topright])
-    
     
     def createPhysicBody(self, *args, **kargs):
         return PhysicBody(self, *args, **kargs)
@@ -139,6 +97,7 @@ if __name__ == "__main__":
     p_world = PhysicWorld(Rect(0, 0, 5000, 5000))
 
     my_entity = p_world.createPhysicBody((200, 100), [], [], mass=10)
+    print my_entity.body
     
     i = 0
     while i < 100:

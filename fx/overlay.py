@@ -43,23 +43,22 @@ class Overlay(GameObject):
         #print self._sprite.visible
         #self._sprite.visible = True
         if self._fading != 0:
-             a  = self._sprite.image.get_alpha()
+            a = self._sprite.image.get_alpha() 
+            a += int(self._fading * 0.85 * tick)
              
-             a += int(self._fading * 0.85 * tick)
-             
-             if self._fading == 1:
+            if self._fading == 1:
                 if a > 255:
                     a = 255
                     self._fading = 0
-             else:
+            else:
                 #fade out
                 if a < 0:
                     a = 0
                     self._fading = 0
                     self._sprite.visible = False
                  
-             self._sprite.image.set_alpha(a) 
-             self._sprite.dirty = 1
+            self._sprite.image.set_alpha(a) 
+            self._sprite.dirty = 1
          
         
     def fadeIn(self, speed=1):

@@ -3,7 +3,7 @@
 
 import pygame
 from pygame.locals import *
-from pygame.color import Color
+#from pygame.color import Color
 
 from pyguane.core.singleton import Singleton
 
@@ -11,10 +11,10 @@ from pyguane.core.singleton import Singleton
 #====================  VIDEO FLAGS  ===========================
 #default mode
 F_DEFAULT = 0
-F_DEFAULT_FULLSCREEN =  HWSURFACE |  FULLSCREEN | DOUBLEBUF 
+F_DEFAULT_FULLSCREEN = HWSURFACE | FULLSCREEN | DOUBLEBUF 
 #opengl mode
-F_OGL =  OPENGL | DOUBLEBUF
-F_OGL_FULLSCREEN =  OPENGL | DOUBLEBUF | FULLSCREEN
+F_OGL = OPENGL | DOUBLEBUF
+F_OGL_FULLSCREEN = OPENGL | DOUBLEBUF | FULLSCREEN
 #============================================================
 
 
@@ -25,7 +25,7 @@ class Window(object):
        The window is the main surface. 
        You can have a standard or an OpenGL display.
     """    
-    def __init__(self, width, height, fullscreen = False, opengl_mode = False):        
+    def __init__(self, width, height, fullscreen=False, opengl_mode=False):        
         self._surf = None
         self._fullscreen = fullscreen
         self._opengl_mode = opengl_mode
@@ -46,7 +46,7 @@ class Window(object):
     @property
     def height(self): return  self.rect.height
     @height.setter
-    def height(self,h): self.size = (self.width, h)
+    def height(self, h): self.size = (self.width, h)
     
     @property
     def surface(self): return self._surf
@@ -75,7 +75,7 @@ class Window(object):
     @size.setter
     def size(self, new_size):
         if self._fullscreen:
-            flags =  F_OGL_FULLSCREEN if self._opengl_mode else F_DEFAULT_FULLSCREEN
+            flags = F_OGL_FULLSCREEN if self._opengl_mode else F_DEFAULT_FULLSCREEN
         else:
             flags = F_OGL if self._opengl_mode else F_DEFAULT
         self._surf = pygame.display.set_mode(new_size, flags)
@@ -85,7 +85,7 @@ class Window(object):
         if self._fullscreen:
             flags = F_OGL if self._opengl_mode else F_DEFAULT
         else:
-            flags =  F_OGL_FULLSCREEN if self._opengl_mode else F_DEFAULT_FULLSCREEN
+            flags = F_OGL_FULLSCREEN if self._opengl_mode else F_DEFAULT_FULLSCREEN
         self._surf = pygame.display.set_mode(self.size, flags)
         self._fullscreen = not self._fullscreen
 
