@@ -54,15 +54,11 @@ class ExtSprite(DirtySprite, object):
         except:
             self.image.set_colorkey(color)
 
-        
-    #def syncOriginalRect(self):
-    #    self._original_rect = ExtRect(self.rect)
-    
     def moveIP(self, dx, dy):
         if dx != 0 or dy != 0:
             #self.rect.move_ip(dx, dy)
             self._position.move_ip(dx, dy)
-            self.rect = self._position.copy()
+            #self.rect = self._position.copy()
             #self.dirty = 1  
             
     def moveToIP(self, x, y):

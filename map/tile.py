@@ -2,7 +2,7 @@
 
 from pyguane.gameobjects.gameobject import GameObject
 
-#from pygame.rect import Rect
+from pyguane.physics.world import PhysicWorld
 
 
 class Tile(GameObject):
@@ -13,7 +13,6 @@ class Tile(GameObject):
         self._body = body
         if body is not None:
             self._body.user_data = self 
-            #print self._body.body
         
     @property
     def sprite(self): return self._sprite
@@ -26,5 +25,5 @@ class Tile(GameObject):
     
     @property
     def shapes(self): return self._body.shapes
-                  
+
 

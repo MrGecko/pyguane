@@ -151,6 +151,8 @@ class ResourceFactory(object):
             rect = ExtRect(data["area"])
             shape_list.append([(0.0, 0.0), (0.0, rect.height * BOX2D_UNITS_SYSTEM),
                                (rect.width * BOX2D_UNITS_SYSTEM, rect.height * BOX2D_UNITS_SYSTEM), (rect.width * BOX2D_UNITS_SYSTEM, 0.0)])#(Rect((0, 0), rect.size))
+        
+
         else:      
             
             body_data = data["body"]
@@ -172,9 +174,11 @@ class ResourceFactory(object):
             if "filename" not in body_data:
                 #there is no filename in the body conf
                 rect = ExtRect(data["area"])
-                shape_list.append([(0.0, 0.0), (0.0, rect.height * BOX2D_UNITS_SYSTEM),
+                shape = [(0.0, 0.0), (0.0, rect.height * BOX2D_UNITS_SYSTEM),
                                    (rect.width * BOX2D_UNITS_SYSTEM, rect.height * BOX2D_UNITS_SYSTEM),
-                                   (rect.width * BOX2D_UNITS_SYSTEM, 0.0)])#(Rect((0, 0), rect.size))
+                                   (rect.width * BOX2D_UNITS_SYSTEM, 0.0)]
+                shape.reverse()
+                shape_list.append(shape)#(Rect((0, 0), rect.size))
             else:
                 #try to load the meshes from the file
                 try:
@@ -194,12 +198,8 @@ class ResourceFactory(object):
         #make the body    
         x, y = position
         position = (x * BOX2D_UNITS_SYSTEM, y * BOX2D_UNITS_SYSTEM)
-        
-        for s in shape_list:
-            s.reverse()
-        
+
         body = PhysicBody(p_world, position, shape_list, body_type, mass, active)
-        #print shape_list
         return body
         
     def makeBodyFromSymbol(self, symbol, x, y):

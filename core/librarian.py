@@ -1,4 +1,6 @@
 
+from pyguane.physics.world import PhysicWorld
+
 
 def flatten(l):
     res = []
@@ -63,7 +65,7 @@ class Librarian(object):
         if path == "*":
             answer = self._data.values()
         else:
-            answer = [self._data[key] for key in self._data if key.startswith(path+".") or (key == path)]        
+            answer = [self._data[key] for key in self._data if key.startswith(path + ".") or (key == path)]        
             answer = rec(answer)
 
         return answer
@@ -83,7 +85,7 @@ class Librarian(object):
         
         for obj in answer:
             #try:
-                obj.update(*args, **kargs)
+            obj.update(*args, **kargs)
             #except TypeError:
             #    pass
                 
@@ -101,20 +103,31 @@ class Librarian(object):
         
         
     def delete(self, path):
-        path = path+"."
+        path = path + "."
         keys = [k for k in self._data.keys() if k.startswith(path)]
         #delete the root of the path branch
         if path[:-1] in self._data.keys():
             keys.append(path[:-1])
-                
-        #kill the sprites if any
+       
         for key in keys:            
             #remove the obj from the librarian
             objs = self._data.pop(key)
             if isinstance(objs, (list, set)):
+                #del objs
                 for obj in objs:
-                    obj.__del__()
+                    try:
+                        if obj.body is not None:
+                            PhysicWorld().world.DestroyBody(obj.body.body) #pourri, mais je n'ai pas reussi a le caser ailleurs
+                    except AttributeError:
+                        pass
+                    del obj
             else:
+                #un seul objet
+                try:
+                    if objs.body is not None:
+                        PhysicWorld().world.DestroyBody(objs.body.body) #pourri, mais je n'ai pas reussi a le caser ailleurs
+                except AttributeError:
+                    pass
                 objs.__del__()
         
             

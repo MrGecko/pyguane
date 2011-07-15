@@ -19,7 +19,6 @@ class PhysicBody(object):
         createShape = self._body.CreateFixturesFromShapes
         #add shapes
         for s in shape:
-            #print s
             if isinstance(s, Rect):
                 createShape(b2PolygonShape(vertices=[s.topleft, s.bottomleft, s.bottomright, s.topright]))
             else:

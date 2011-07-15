@@ -35,11 +35,12 @@ class Game(object):
         def renderGame(surface):
             
             if self.physic_world.debug:
+                color = self.physic_world.DEBUG_COLOR
                 for b in self.physic_world.world:
                     x, y = b.position
                     for fixture in b:
                         vertices = [(vx + x, vy + y) for vx, vy in fixture.shape.vertices]
-                        polygon(surface, vertices, self.physic_world.DEBUG_COLOR)
+                        polygon(surface, vertices, color)
                 displayFlip()
                 
             return self.sprite_factory.draw(surface, Window().bgd)

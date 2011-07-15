@@ -3,7 +3,7 @@ from pyguane.gameobjects.gameobject import GameObject
 from pyguane.rect.extrect import ExtRect
 from pyguane.core.window import Window
 from pyguane.sprites.factory import SpriteFactory
-from physics.constants import BOX2D_UNITS_SYSTEM
+#from physics.constants import BOX2D_UNITS_SYSTEM
 
 class Camera(GameObject):
     
@@ -12,16 +12,19 @@ class Camera(GameObject):
         if rect is None:
             rect = Window().rect
         self._frame = ExtRect(rect)
-        self._last_frame = ExtRect(rect)
+        self._last_frame = None#ExtRect(rect)
         self._updateQuadGroupFromRect = SpriteFactory().updateQuadGroupFromRect
         self._dx, self._dy = 0, 0
         
     @property
     def frame(self): return self._frame    
+    
+    @property
+    def delta(self): return (self._dx, self._dy)
             
-    def update(self, tick):
+    def update(self, *args, **kwargs):
         self._updateQuadGroupFromRect(self._frame)
-        
+        #tick = kwargs["tick"]
         quadgroup = SpriteFactory().quadgroup
         if (self._last_frame != self._frame) and (quadgroup is not None):
             for spr in quadgroup.sprites():
