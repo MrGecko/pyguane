@@ -8,11 +8,12 @@ from Box2D import b2PolygonShape, b2Vec2
 
 class PhysicBody(object):
     
-    def __init__(self, world, position, shape_list, body_type, mass=0.0, active=True,):
+    def __init__(self, world, position, body_relative_position, shape_list, body_type, mass=0.0, active=True,):
         #b_def = world.createBodyDef(position, active)
         #b_def.massData.mass = mass
         self._body = world.createBody(position=position, type=body_type)
         self.addShape(world, shape_list)
+        self._body_relative_position = body_relative_position
                 
     def addShape(self, world, shape):
         #shortcuts
@@ -41,6 +42,9 @@ class PhysicBody(object):
     
     @property
     def is_sleeping(self): return self._body.awake
+    
+    @property
+    def relative_body_position(self): return self._body_relative_position
     
     
     @user_data.setter

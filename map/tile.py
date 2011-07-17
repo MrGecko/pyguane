@@ -2,7 +2,7 @@
 
 from pyguane.gameobjects.gameobject import GameObject
 
-from pyguane.physics.world import PhysicWorld
+#from pyguane.physics.world import PhysicWorld
 
 
 class Tile(GameObject):

@@ -50,6 +50,8 @@ class TileMap(object):
                         elif pos == "north":
                             shift_y = shift_y - (len(seq["symbols"]) / seq["max_width"]) * seq["block_size"][1]
                         elif pos == "south":
+                            if y == 0:
+                                shift_y += block_height
                             shift_y = shift_y + y
                 else:
                     #no location specified
@@ -57,9 +59,15 @@ class TileMap(object):
                     
                 x, y = 0, 0
                 
-                max_width = seq["max_width"]
+                if "max_width" in seq:
+                    max_width = seq["max_width"]
+                else:
+                    max_width = 500
+                
                 layer = seq["layer"]
-                block_width, block_height = seq["block_size"]
+                heights = []
+                #block_width, block_height = 0, 0#seq["block_size"]
+               
                 j = 0
                 #for each tile of the sequence
                 for symbol in seq["symbols"]:
@@ -72,6 +80,10 @@ class TileMap(object):
                             j += 1
                             new_tile = makeTileFromSymbol(symbol, x + shift_x, y + shift_y, layer)
                             appendTile(new_tile)
+                            
+                            heights.append(new_tile.sprite.rect.height)
+                            block_width = new_tile.sprite.rect.width #last width
+                            block_height = min(heights)         #min height
                         #new column
                         x += block_width
                         if x / block_width >= max_width:
