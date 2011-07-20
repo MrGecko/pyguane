@@ -3,9 +3,9 @@
 from pyguane.core.librarian import Librarian
 from pyguane.core.singleton import Singleton
 from pyguane.map.tile import Tile
-from pyguane.physics.body import PhysicBody
+from pyguane.physics.solid import Solid
 from pyguane.physics.constants import BOX2D_UNITS_SYSTEM
-from pyguane.physics.world import PhysicWorld
+#from pyguane.physics.world import PhysicWorld
 from pyguane.rect.extrect import ExtRect
 from pyguane.sprites.factory import SpriteFactory
 
@@ -136,16 +136,9 @@ class ResourceFactory(object):
         return new_sprite
         
     
-    def _makeBodyFromData(self, data, position):
+    def _makeSolidFromData(self, data, position):
         if data is None:
             raise Exception("Error: the data is None (maybe the symbol is wrong)")
-        
-        #make the physic body        
-        try:
-            p_world = PhysicWorld()
-        except Exception, e:
-            print e, ": you need to have a physic world before you create your bodies."
-            raise e
         
         active = True #active = False means the body will not participate in collisions, ray casts, etc.
         shape_list = []
@@ -157,15 +150,13 @@ class ResourceFactory(object):
             rect = ExtRect(data["area"])
             shape_list.append([(0.0, 0.0), (0.0, rect.height * BOX2D_UNITS_SYSTEM),
                                (rect.width * BOX2D_UNITS_SYSTEM, rect.height * BOX2D_UNITS_SYSTEM), (rect.width * BOX2D_UNITS_SYSTEM, 0.0)])#(Rect((0, 0), rect.size))
-        
-
         else:      
             
             body_data = data["body"]
             body_relative_position = (0, 0)
             
             if body_data is None:
-                return None
+                return Solid(None, None, None, None)
 
             if "type" in body_data:
                 if body_data["type"] == "dynamic":
@@ -190,14 +181,14 @@ class ResourceFactory(object):
                     area = data["area"]
                     rect = ExtRect(area)
                 
-                left = 0.0# float(rect.left) * BOX2D_UNITS_SYSTEM * 0
-                top = 0.0#float(rect.top) * BOX2D_UNITS_SYSTEM * 0
+                left = 0.0
+                top = 0.0
                 width = float(rect.width) * BOX2D_UNITS_SYSTEM
                 height = float(rect.height) * BOX2D_UNITS_SYSTEM
                 
                 shape = [(left , top), (left , height), (width, height), (width , top)]
                 shape.reverse()
-                shape_list.append(shape)#(Rect((0, 0), rect.size))
+                shape_list.append(shape)
             else:
                 #try to load the meshes from the file
                 try:
@@ -212,34 +203,33 @@ class ResourceFactory(object):
                                 x, y = float(temp_list[1]), float(temp_list[3])
                                 shape_list[-1].append((x * BOX2D_UNITS_SYSTEM, y * BOX2D_UNITS_SYSTEM))
                 except IOError, e:
-                    raise IOError("Error while loading the body data: %s" % (body_data["filename"]))
+                    raise IOError("Error while loading the body data: %s  -- %s" % (body_data["filename"], e))
 
-        #make the body    
+        #make the solid body    
         x, y = position
         position = (x * BOX2D_UNITS_SYSTEM, y * BOX2D_UNITS_SYSTEM)
-        body = PhysicBody(p_world, position, body_relative_position, shape_list, body_type, mass, active)
-        return body
-        
-    def makeBodyFromSymbol(self, symbol, x, y):
+        return Solid(position, body_relative_position, shape_list, body_type, mass, active)
+    
+    def makeSolidFromSymbol(self, symbol, x, y):
         t_data = self._getDataFromSymbol(symbol)
-        return self._makeBodyFromData(t_data, (x, y))
+        return self._makeSolidFromData(t_data, (x, y))
        
     
     def makeTileFromSymbol(self, symbol, x, y, layer=0):
         t_data = self._getDataFromSymbol(symbol)
                            
         #make the body
-        body = self._makeBodyFromData(t_data, (x, y))
+        solid = self._makeSolidFromData(t_data, (x, y))
         #position relative au sprite
-        if body is not None:
-            body.body.position += (body.relative_body_position[0] * BOX2D_UNITS_SYSTEM,
-                                   body.relative_body_position[1] * BOX2D_UNITS_SYSTEM)
+        if solid.body is not None:
+            solid.body.position += (solid.relative_position[0] * BOX2D_UNITS_SYSTEM,
+                                   solid.relative_position[1] * BOX2D_UNITS_SYSTEM)
         #make the sprite
         new_sprite = self._makeSpriteFromData(t_data, x, y, layer)
         if t_data["ppa"]:
             new_sprite.image.set_alpha(0)
         #finally link them into a tile object
-        new_tile = Tile(new_sprite, body, t_data["kind"])
+        new_tile = Tile(new_sprite, solid, t_data["kind"])
         return new_tile
         
         

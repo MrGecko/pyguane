@@ -3,7 +3,7 @@ from Box2D import *
 from pygame.draw import *
 from pygame.rect import Rect
 from pyguane.core.singleton import Singleton
-from pyguane.physics.body import PhysicBody
+#from pyguane.physics.body import Solid
 
 
 
@@ -56,10 +56,7 @@ class PhysicWorld:
     
     def createBody(self, position, type):
         return self._world.CreateBody(type=type, position=position)
-    
-    def createPhysicBody(self, *args, **kargs):
-        return PhysicBody(self, *args, **kargs)
-        
+
     def query(self, *args, **kargs):
         return self._world.Query(*args, **kargs)
 
@@ -73,8 +70,6 @@ if __name__ == "__main__":
     
     i = 0
     while i < 100:
-        #body.ApplyForce(b2Vec2(0,15), body.GetPosition())
-        #my_entity.applyForce(b2Vec2(0,15))
         i += 1
         p_world.step(1.0 / 60, 10, 8)
         print my_entity.position, my_entity.mass

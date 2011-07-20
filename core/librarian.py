@@ -114,10 +114,11 @@ class Librarian(object):
             objs = self._data.pop(key)
             if isinstance(objs, (list, set)):
                 #del objs
+                world = PhysicWorld()
                 for obj in objs:
                     try:
                         if obj.body is not None:
-                            PhysicWorld().world.DestroyBody(obj.body.body) #pourri, mais je n'ai pas reussi a le caser ailleurs
+                            world.world.DestroyBody(obj.body) #pourri, mais je n'ai pas reussi a le caser ailleurs
                     except AttributeError:
                         pass
                     obj.__del__()
@@ -125,7 +126,7 @@ class Librarian(object):
                 #un seul objet
                 try:
                     if objs.body is not None:
-                        PhysicWorld().world.DestroyBody(objs.body.body) #pourri, mais je n'ai pas reussi a le caser ailleurs
+                        PhysicWorld().world.DestroyBody(objs.body) #pourri, mais je n'ai pas reussi a le caser ailleurs
                 except AttributeError:
                     pass
                 objs.__del__()
