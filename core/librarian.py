@@ -120,7 +120,7 @@ class Librarian(object):
                             PhysicWorld().world.DestroyBody(obj.body.body) #pourri, mais je n'ai pas reussi a le caser ailleurs
                     except AttributeError:
                         pass
-                    del obj
+                    obj.__del__()
             else:
                 #un seul objet
                 try:
